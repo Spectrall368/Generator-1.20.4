@@ -3,9 +3,9 @@
   "supportedversions": [2024002],
   "weight": 0,
   "info": {
-    "name": "Minecraft Forge 1.20.4 Java Edition/Datapack Generator",
+    "name": "Minecraft NeoForge 1.20.4 Java Edition/Datapack Generator",
     "version": "1.0",
-    "description": "Minecraft Forge 1.20.4 Java Edition/Datapack Generator",
+    "description": "Minecraft NeoForge 1.20.4 Java Edition/Datapack Generator",
     "author": "_Spectrall",
     "credits": "",
     "dependencies":  [],
