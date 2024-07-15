@@ -1,6 +1,6 @@
 name: NeoForge for @minecraft (@buildfileversion)
-status: stable
-buildfileversion: 20.4.234
+status: deprecated
+buildfileversion: 20.4.237
 
 import:
   - datapack-1.20.4
@@ -53,6 +53,10 @@ screen_textures_dir: "@MODASSETSROOT/textures/screens"
 armor_textures_dir: "@MODASSETSROOT/textures/models/armor"
 other_textures_dir: "@MODASSETSROOT/textures"
 
+# vanilla resources
+vanilla_block_textures_dir: "client-1.20.4-client-extra.jar!/assets/minecraft/textures/block"
+vanilla_item_textures_dir: "client-1.20.4-client-extra.jar!/assets/minecraft/textures/item"
+
 base_templates:
   - template: modbase/mod.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/@JavaModName.java"
@@ -80,8 +84,8 @@ base_templates:
     writer: file
     name: "@RESROOT/META-INF/accesstransformer.cfg"
     condition_any:
-      - "${w.hasElementsOfType('feature')}"
       - "${w.getGElementsOfType('biome')?filter(e -> e.spawnBiome || e.spawnInCaves || e.spawnBiomeNether)?size != 0}"
+      - "${w.hasElementsOfType('feature')}"
   - template: elementinits/javamodels.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameModels.java"
     condition: hasJavaModels()
