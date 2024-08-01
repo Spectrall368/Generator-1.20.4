@@ -96,7 +96,9 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
 				</#if>
 		<#elseif data.toolType == "Shears" || data.toolType == "Shield">
 			new Item.Properties()
+				<#if (data.usageCount != 0) && (data.toolType == "Shears" || data.toolType == "Shield")>
 				.durability(${data.usageCount})
+				</#if>
 				<#if data.immuneToFire>
 				.fireResistant()
 				</#if>
@@ -128,6 +130,13 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
 		}
 	<#elseif data.toolType=="MultiTool">
 		@Override public boolean isCorrectToolForDrops(BlockState blockstate) {
+			<#if hasProcedure(data.additionalDropCondition)>
+				if(!<@procedureCode data.additionalDropCondition, {
+					"itemstack": "this.getDefaultInstance()",
+					"blockstate": "blockstate"
+				}, false/>) return false;
+			</#if>
+
 			<#if data.blockDropsTier == "WOOD" || data.blockDropsTier == "GOLD">
 			return !blockstate.is(BlockTags.NEEDS_STONE_TOOL) && !blockstate.is(BlockTags.NEEDS_IRON_TOOL) && !blockstate.is(BlockTags.NEEDS_DIAMOND_TOOL);
 			<#elseif data.blockDropsTier == "STONE">
@@ -184,7 +193,9 @@ public class ${name}Item extends Item {
 
 	public ${name}Item() {
 		super(new Item.Properties()
+			<#if data.usageCount != 0>
 			.durability(${data.usageCount})
+			</#if>
 			<#if data.immuneToFire>
 			.fireResistant()
 			</#if>
@@ -224,7 +235,9 @@ public class ${name}Item extends FishingRodItem {
 
 	public ${name}Item() {
 		super(new Item.Properties()
+			<#if data.usageCount != 0>
 			.durability(${data.usageCount})
+			</#if>
 			<#if data.immuneToFire>
 			.fireResistant()
 			</#if>
@@ -310,6 +323,5 @@ public class ${name}Item extends FishingRodItem {
 	<@onItemTick data.onItemInUseTick, data.onItemInInventoryTick/>
 
 	<@hasGlow data.glowCondition/>
-
 </#macro>
 <#-- @formatter:on -->
