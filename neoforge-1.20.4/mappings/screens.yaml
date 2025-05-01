@@ -105,7 +105,6 @@ UnsupportedGraphicsWarning: UnsupportedGraphicsWarningScreen
 VideoSettings: VideoSettingsScreen
 Warning: WarningScreen
 Win: WinScreen
-WithNarratorSettings: SimpleOptionsSubScreen
 Working: ProgressScreen
 WorldLoadProgress: LevelLoadingScreen
 WorldSelection: SelectWorldScreen

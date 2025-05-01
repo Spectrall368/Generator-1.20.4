@@ -32,10 +32,7 @@
 <#include "mcitems.ftl">
 <#include "procedures.java.ftl">
 <#include "triggers.java.ftl">
-
 package ${package}.item;
-
-import net.minecraft.world.entity.ai.attributes.Attributes;
 
 <#compress>
 <#if data.toolType == "Pickaxe" || data.toolType == "Axe" || data.toolType == "Sword" || data.toolType == "Spade"
