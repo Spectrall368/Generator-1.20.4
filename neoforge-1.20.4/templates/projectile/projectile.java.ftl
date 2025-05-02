@@ -80,6 +80,22 @@ public class ${name}Entity extends AbstractArrow implements ItemSupplier {
 		}
 		return entity == null ? null : new EntityHitResult(entity);
 	}
+
+	private Direction determineHitDirection(AABB entityBox, AABB blockBox) {
+		double dx = entityBox.getCenter().x - blockBox.getCenter().x;
+		double dy = entityBox.getCenter().y - blockBox.getCenter().y;
+		double dz = entityBox.getCenter().z - blockBox.getCenter().z;
+		double absDx = Math.abs(dx);
+		double absDy = Math.abs(dy);
+		double absDz = Math.abs(dz);
+		if (absDy > absDx && absDy > absDz) {
+			return dy > 0 ? Direction.DOWN : Direction.UP;
+		} else if (absDx > absDz) {
+			return dx > 0 ? Direction.WEST : Direction.EAST;
+		} else {
+			return dz > 0 ? Direction.NORTH : Direction.SOUTH;
+		}
+	}
 	</#if>
 
 	<#if hasProcedure(data.onHitsPlayer)>
