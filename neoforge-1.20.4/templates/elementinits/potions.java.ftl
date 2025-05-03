@@ -29,11 +29,9 @@
 -->
 
 <#-- @formatter:off -->
-
 /*
  *    MCreator note: This file will be REGENERATED on each build.
  */
-
 package ${package}.init;
 
 public class ${JavaModName}Potions {
@@ -43,10 +41,8 @@ public class ${JavaModName}Potions {
 	<#list potions as potion>
 		public static final DeferredHolder<Potion, Potion> ${potion.getModElement().getRegistryNameUpper()} = REGISTRY.register("${potion.getModElement().getRegistryName()}", () -> new Potion(
 			<#list potion.effects as effect>
-			new MobEffectInstance(${effect.effect}, ${effect.duration}, ${effect.amplifier}, ${effect.ambient}, ${effect.showParticles})<#sep>,
+			new MobEffectInstance(${effect.effect}, ${effect.getDuration()}, ${effect.amplifier}, ${effect.ambient}, ${effect.showParticles})<#sep>,
 			</#list>));
 	</#list>
-
 }
-
 <#-- @formatter:on -->

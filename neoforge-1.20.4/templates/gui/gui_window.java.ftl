@@ -31,7 +31,6 @@
 <#-- @formatter:off -->
 <#include "../procedures.java.ftl">
 package ${package}.client.gui;
-
 <#assign hasEntityModels = false>
 
 public class ${name}Screen extends AbstractContainerScreen<${name}Menu> {
@@ -135,6 +134,20 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> {
 					${component.getWidth(w.getWorkspace())}, ${component.getHeight(w.getWorkspace())});
 			<#if hasProcedure(component.displayCondition)>}</#if>
 		</#list>
+
+		<#list data.getComponentsOfType("Sprite") as component>
+ 			<#if hasProcedure(component.displayCondition)>if (<@procedureOBJToConditionCode component.displayCondition/>) {</#if>
+ 				guiGraphics.blit(new ResourceLocation("${modid}:textures/screens/${component.sprite}"),
+ 					this.leftPos + ${component.gx(data.width)}, this.topPos + ${component.gy(data.height)},
+ 					<#if (component.getTextureWidth(w.getWorkspace()) > component.getTextureHeight(w.getWorkspace()))>
+ 						<@getSpriteByIndex component "width"/>, 0
+ 					<#else>
+ 						0, <@getSpriteByIndex component "height"/>
+ 					</#if>,
+ 					${component.getWidth(w.getWorkspace())}, ${component.getHeight(w.getWorkspace())},
+ 					${component.getTextureWidth(w.getWorkspace())}, ${component.getTextureHeight(w.getWorkspace())});
+ 			<#if hasProcedure(component.displayCondition)>}</#if>
+ 		</#list>
 
 		RenderSystem.disableBlend();
 	}
@@ -296,9 +309,7 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> {
 		entity.yHeadRot = f6;
 	}
 	</#if>
-
 }
-
 <#macro buttonOnClick component>
 e -> {
 	<#if hasProcedure(component.onClick)>
@@ -309,7 +320,6 @@ e -> {
 	</#if>
 }
 </#macro>
-
 <#macro buttonDisplayCondition component>
 <#if hasProcedure(component.displayCondition)>
 {
@@ -320,4 +330,27 @@ e -> {
 }
 </#if>
 </#macro>
+<#macro getSpriteByIndex component dim>
+ 	<#if hasProcedure(component.spriteIndex)>
+ 		Mth.clamp((int) <@procedureOBJToNumberCode component.spriteIndex/> *
+ 			<#if dim == "width">
+ 				${component.getWidth(w.getWorkspace())}
+ 			<#else>
+ 				${component.getHeight(w.getWorkspace())}
+ 			</#if>,
+ 			0,
+ 			<#if dim == "width">
+ 				${component.getTextureWidth(w.getWorkspace()) - component.getWidth(w.getWorkspace())}
+ 			<#else>
+ 				${component.getTextureHeight(w.getWorkspace()) - component.getHeight(w.getWorkspace())}
+ 			</#if>
+ 		)
+ 	<#else>
+ 		<#if dim == "width">
+ 			${component.getWidth(w.getWorkspace()) * component.spriteIndex.getFixedValue()}
+ 		<#else>
+ 			${component.getHeight(w.getWorkspace()) * component.spriteIndex.getFixedValue()}
+ 		</#if>
+ 	</#if>
+ </#macro>
 <#-- @formatter:on -->

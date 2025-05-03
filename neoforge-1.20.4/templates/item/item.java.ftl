@@ -35,10 +35,13 @@
 package ${package}.item;
 
 <#compress>
-public class ${name}Item extends Item {
+public class ${name}Item extends <#if data.isMusicDisc>Record</#if>Item {
 
 	public ${name}Item() {
-		super(new Item.Properties()
+	    super(
+                <#if data.isMusicDisc>
+                ${data.musicDiscAnalogOutput}, () -> BuiltInRegistries.SOUND_EVENTS.get(new ResourceLocation("${data.musicDiscMusic}" )),
+                </#if>new Item.Properties()
 				<#if data.hasInventory()>
 				.stacksTo(1)
 				<#elseif data.damageCount != 0>
@@ -58,7 +61,11 @@ public class ${name}Item extends Item {
 					<#if data.isMeat>.meat()</#if>
 					.build())
 				</#if>
+		<#if data.isMusicDisc>
+ 		,${data.musicDiscLengthInTicks});
+ 		<#else>
 		);
+		</#if>
 	}
 
 	<#if data.hasNonDefaultAnimation()>
@@ -141,7 +148,7 @@ public class ${name}Item extends Item {
 	}
 	</#if>
 
-	<@addSpecialInformation data.specialInformation/>
+	<@addSpecialInformation data.specialInformation, "item." + modid + "." + registryname/>
 
 	<#assign shouldExplicitlyCallStartUsing = !data.isFood && (data.useDuration > 0)> <#-- ranged items handled in if below so no need to check for that here too -->
  	<#if hasProcedure(data.onRightClickedInAir) || data.hasInventory() || data.enableRanged || shouldExplicitlyCallStartUsing>

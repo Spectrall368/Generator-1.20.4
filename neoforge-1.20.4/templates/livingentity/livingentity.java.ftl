@@ -37,17 +37,14 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 
 <#assign extendsClass = "PathfinderMob">
-
 <#if data.aiBase != "(none)">
 	<#assign extendsClass = data.aiBase?replace("Enderman", "EnderMan")>
 <#else>
 	<#assign extendsClass = data.mobBehaviourType?replace("Mob", "Monster")?replace("Creature", "PathfinderMob")>
 </#if>
-
 <#if data.breedable>
 	<#assign extendsClass = data.tameable?then("TamableAnimal", "Animal")>
 </#if>
-
 public class ${name}Entity extends ${extendsClass} <#if data.ranged>implements RangedAttackMob</#if> {
 
 	<#list data.entityDataEntries as entry>
@@ -59,6 +56,14 @@ public class ${name}Entity extends ${extendsClass} <#if data.ranged>implements R
 			public static final EntityDataAccessor<String> DATA_${entry.property().getName()} = SynchedEntityData.defineId(${name}Entity.class, EntityDataSerializers.STRING);
 		</#if>
 	</#list>
+
+ 	<#assign hasPlayableAnimations = false>
+ 	<#list data.animations as animation>
+ 		<#if !animation.walking>
+ 		public final AnimationState animationState${animation?index} = new AnimationState();
+ 		<#assign hasPlayableAnimations = true>
+ 		</#if>
+ 	</#list>
 
 	<#if data.isBoss>
 	private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(),
@@ -415,7 +420,7 @@ public class ${name}Entity extends ${extendsClass} <#if data.ranged>implements R
 	}
     </#if>
 
-	<#if data.guiBoundTo?has_content && data.guiBoundTo != "<NONE>">
+	<#if data.guiBoundTo?has_content>
 	private final ItemStackHandler inventory = new ItemStackHandler(${data.inventorySize}) {
 		@Override public int getSlotLimit(int slot) {
 			return ${data.inventoryStackSize};
@@ -439,7 +444,7 @@ public class ${name}Entity extends ${extendsClass} <#if data.ranged>implements R
 	}
 	</#if>
 
-	<#if data.entityDataEntries?has_content || (data.guiBoundTo?has_content && data.guiBoundTo != "<NONE>")>
+	<#if data.entityDataEntries?has_content || data.guiBoundTo?has_content>
 	@Override public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		<#list data.entityDataEntries as entry>
@@ -451,7 +456,7 @@ public class ${name}Entity extends ${extendsClass} <#if data.ranged>implements R
 			compound.putString("Data${entry.property().getName()}", this.entityData.get(DATA_${entry.property().getName()}));
 			</#if>
 		</#list>
-		<#if data.guiBoundTo?has_content && data.guiBoundTo != "<NONE>">
+		<#if data.guiBoundTo?has_content>
 		compound.put("InventoryCustom", inventory.serializeNBT());
 		</#if>
 	}
@@ -468,19 +473,19 @@ public class ${name}Entity extends ${extendsClass} <#if data.ranged>implements R
 				this.entityData.set(DATA_${entry.property().getName()}, compound.getString("Data${entry.property().getName()}"));
 				</#if>
 		</#list>
-		<#if data.guiBoundTo?has_content && data.guiBoundTo != "<NONE>">
+		<#if data.guiBoundTo?has_content>
 		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)
 			inventory.deserializeNBT(inventoryTag);
 		</#if>
 	}
 	</#if>
 
-	<#if hasProcedure(data.onRightClickedOn) || data.ridable || (data.tameable && data.breedable) || (data.guiBoundTo?has_content && data.guiBoundTo != "<NONE>")>
+	<#if hasProcedure(data.onRightClickedOn) || data.ridable || (data.tameable && data.breedable) || data.guiBoundTo?has_content>
 	@Override public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
 		ItemStack itemstack = sourceentity.getItemInHand(hand);
 		InteractionResult retval = InteractionResult.sidedSuccess(this.level().isClientSide());
 
-		<#if data.guiBoundTo?has_content && data.guiBoundTo != "<NONE>">
+		<#if data.guiBoundTo?has_content>
 			<#if data.ridable>
 				if (sourceentity.isSecondaryUseActive()) {
 			</#if>
@@ -591,6 +596,29 @@ public class ${name}Entity extends ${extendsClass} <#if data.ranged>implements R
 		}/>
 	}
     </#if>
+
+ 	<#if hasPlayableAnimations>
+ 	@Override public void tick() {
+ 		super.tick();
+ 		if (this.level().isClientSide()) {
+ 			<#list data.animations as animation>
+ 				<#if !animation.walking>
+ 					<#if hasProcedure(animation.condition)>
+ 					this.animationState${animation?index}.animateWhen(<@procedureCode animation.condition, {
+ 						"x": "this.getX()",
+ 						"y": "this.getY()",
+ 						"z": "this.getZ()",
+ 						"entity": "this",
+ 						"world": "this.level()"
+ 					}, false/>, this.tickCount);
+ 					<#else>
+ 					this.animationState${animation?index}.animateWhen(true, this.tickCount);
+ 					</#if>
+ 				</#if>
+ 			</#list>
+ 		}
+ 	}
+ 	</#if>
 
 	<#if hasProcedure(data.onMobTickUpdate) || hasProcedure(data.boundingBoxScale)>
 	@Override public void baseTick() {

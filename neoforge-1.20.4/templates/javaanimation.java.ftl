@@ -29,11 +29,8 @@
 -->
 
 <#-- @formatter:off -->
-package ${package}.client.model;
+package ${package}.client.model.animations;
 
-${model
-    ?replace("private final ModelPart", "public final ModelPart")
-    ?replace("new ResourceLocation\\(\"modid\", \"(.*?)\"\\)", "new ResourceLocation(\"" + modid + "\", \"" + modelregistryname + "\")", "r")
-    ?replace("void setupAnim(Entity ", "void setupAnim(T ")
-}
+${animation}
+
 <#-- @formatter:on -->

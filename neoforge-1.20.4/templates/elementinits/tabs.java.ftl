@@ -29,22 +29,19 @@
 -->
 
 <#-- @formatter:off -->
-
 <#include "../mcitems.ftl">
-
 <#assign tabMap = w.getCreativeTabMap()>
 <#assign vanillaTabs = tabMap.keySet()?filter(e -> !e?starts_with('CUSTOM:'))>
 <#assign customTabs = tabMap.keySet()?filter(e -> e?starts_with('CUSTOM:'))>
-
 /*
  *    MCreator note: This file will be REGENERATED on each build.
  */
-
 package ${package}.init;
 
 <#if vanillaTabs?has_content>
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 </#if>
+<#compress>
 public class ${JavaModName}Tabs {
 
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ${JavaModName}.MODID);
@@ -62,8 +59,10 @@ public class ${JavaModName}Tabs {
 							</#list>
 						})
 						<#if tab.showSearch>.withSearchBar()</#if>
+						<#if prevTab??>.withTabsBefore(${prevTab}.getId())</#if>
 						.build()
 				);
+		<#assign prevTab = tab.getModElement().getRegistryNameUpper()>
 	</#list>
 
 	<#if vanillaTabs?has_content>
@@ -79,7 +78,6 @@ public class ${JavaModName}Tabs {
 		</#list>
 	}
 	</#if>
-
 }
-
+</#compress>
 <#-- @formatter:on -->
