@@ -45,7 +45,6 @@ import net.neoforged.bus.api.Event;
 		<#assign nullableDependencies += [dependency.getName()]/>
 	</#if>
 </#list>
-
 <#compress>
 
 <#if trigger_code?has_content>
@@ -53,7 +52,6 @@ ${trigger_code}
 <#else>
 public class ${name}Procedure {
 </#if>
-
 	<#if trigger_code?has_content>
 	public static <#if return_type??>${return_type.getJavaType(generator.getWorkspace())}<#else>void</#if> execute(
 		<#list dependencies as dependency>
@@ -85,8 +83,7 @@ public class ${name}Procedure {
 		${procedurecode}
 	}
 
+	${extra_templates_code}
 }
-
 </#compress>
-
 <#-- @formatter:on -->
