@@ -43,7 +43,7 @@
                     "predicate": {
                       "enchantments": [
                         {
-                          "enchantments": "minecraft:silk_touch",
+                          "enchantment": "minecraft:silk_touch",
                           "levels": {
                             "min": 1
                           }
@@ -61,7 +61,7 @@
                       "predicate": {
                         "enchantments": [
                           {
-                            "enchantments": "minecraft:silk_touch",
+                            "enchantment": "minecraft:silk_touch",
                             "levels": {
                               "min": 1
                             }
