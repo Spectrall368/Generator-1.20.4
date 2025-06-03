@@ -6,7 +6,7 @@ tasks.register('build', Zip.class) {
 
 tasks.register('syncDataPack', Copy) {
     from("build/export/export.zip")
-    into("run/datapacks/")
+    into("run/resourcepacks/")
     dependsOn 'build'
 }
 

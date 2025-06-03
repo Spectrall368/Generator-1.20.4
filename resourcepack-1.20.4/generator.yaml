@@ -1,4 +1,4 @@
-name: Data Pack for Java Edition @minecraft
+name: Resource Pack for Java Edition @minecraft
 status: deprecated
 buildfileversion: 20.4.248
 
@@ -11,16 +11,17 @@ gradle:
 source_root: "@WORKSPACEROOT/src/main/"
 res_root: "@SRCROOT"
 mod_assets_root: "@RESROOT/assets/@modid"
-mod_data_root: "@RESROOT/data/@modid"
 
-# specific resource folders
-structures_dir: "@MODDATAROOT/structures"
+# vanilla resources
+vanilla_resources_jar: "client-extra-.*.jar"
 
 base_templates:
   - template: pack.mcmeta.ftl
     writer: json
     name: "@SRCROOT/pack.mcmeta"
 
-tags:
-  template: tags.json.ftl
-  name: "@RESROOT/data/@namespace/tags/@folder_pre21/@name.json"
+resources_setup_tasks:
+  - task: provide_default_pack_icon
+    width: 128
+    height: 128
+    to: "@RESROOT/pack.png"
