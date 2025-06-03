@@ -1,5 +1,4 @@
-private static AbstractArrow initArrowProjectile(AbstractArrow entityToSpawn, Entity shooter, float damage,
-		boolean silent, boolean fire, boolean particles, AbstractArrow.Pickup pickup) {
+private static AbstractArrow initArrowProjectile(AbstractArrow entityToSpawn, Entity shooter, float damage, boolean silent, boolean fire, boolean particles, AbstractArrow.Pickup pickup) {
 	entityToSpawn.setOwner(shooter);
 	entityToSpawn.setBaseDamage(damage);
 	if (silent)
