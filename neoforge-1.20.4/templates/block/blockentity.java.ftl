@@ -139,7 +139,7 @@ public class ${name}BlockEntity extends RandomizableContainerBlockEntity impleme
 	}
 
 	@Override public boolean canPlaceItemThroughFace(int index, ItemStack itemstack, @Nullable Direction direction) {
-		return this.canPlaceItem(index, itemstack)Add commentMore actions
+		return this.canPlaceItem(index, itemstack)
 		<#if hasProcedure(data.inventoryAutomationPlaceCondition)>&&
 			<@procedureCode data.inventoryAutomationPlaceCondition, {
 				"index": "index",

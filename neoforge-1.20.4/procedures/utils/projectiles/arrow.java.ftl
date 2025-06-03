@@ -5,7 +5,7 @@ private static AbstractArrow initArrowProjectile(AbstractArrow entityToSpawn, En
 	if (silent)
 		entityToSpawn.setSilent(true);
 	if (fire)
-		entityToSpawn.igniteForSeconds(100);
+		entityToSpawn.setSecondsOnFire(100);
 	if (particles)
 		entityToSpawn.setCritArrow(true);
 	entityToSpawn.pickup = pickup;

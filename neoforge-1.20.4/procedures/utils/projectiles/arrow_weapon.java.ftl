@@ -1,8 +1,7 @@
-private static ItemStack createArrowWeaponItemStack(Level level, int knockback, byte piercing) {
-	ItemStack weapon = new ItemStack(Items.ARROW);
+private static AbstractArrow createArrowWeaponItemStack(AbstractArrow entityToSpawn, int knockback, byte piercing) {
 	if (knockback > 0)
-		weapon.enchant(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.KNOCKBACK), knockback);
+		entityToSpawn.setKnockback(knockback);
 	if (piercing > 0)
-		weapon.enchant(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.PIERCING), piercing);
-	return weapon;
+		entityToSpawn.setPierceLevel(piercing);
+	return entityToSpawn;
 }
