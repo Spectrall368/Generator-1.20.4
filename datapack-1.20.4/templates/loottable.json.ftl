@@ -41,16 +41,14 @@
                   {
                     "condition": "minecraft:match_tool",
                     "predicate": {
-                      "predicates": {
-                        "minecraft:enchantments": [
-                          {
-                            "enchantments": "minecraft:silk_touch",
-                            "levels": {
-                              "min": 1
-                            }
+                      "enchantments": [
+                        {
+                          "enchantments": "minecraft:silk_touch",
+                          "levels": {
+                            "min": 1
                           }
-                        ]
-                      }
+                        }
+                      ]
                     }
                   }
                 ],
@@ -61,16 +59,14 @@
                     "term": {
                       "condition": "minecraft:match_tool",
                       "predicate": {
-                        "predicates": {
-                          "minecraft:enchantments": [
-                            {
-                              "enchantments": "minecraft:silk_touch",
-                              "levels": {
-                                "min": 1
-                              }
+                        "enchantments": [
+                          {
+                            "enchantments": "minecraft:silk_touch",
+                            "levels": {
+                              "min": 1
                             }
-                          ]
-                        }
+                          }
+                        ]
                       }
                     }
                   }
@@ -87,6 +83,7 @@
                   <#if entry.minEnchantmentLevel != 0 || entry.maxEnchantmentLevel != 0>
                   ,{
                     "function": "minecraft:enchant_with_levels",
+                    "treasure": true,
                     "levels": {
                       "min": ${entry.minEnchantmentLevel},
                       "max": ${entry.maxEnchantmentLevel}
