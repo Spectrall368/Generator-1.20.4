@@ -160,7 +160,7 @@ public class ${name}BlockEntity extends RandomizableContainerBlockEntity impleme
 				"itemstack": "itemstack",
 				"direction": "direction"
 			}, false/>;
-		<#else>Add commentMore actions
+		<#else>
 			return true;
 		</#if>
 	}
