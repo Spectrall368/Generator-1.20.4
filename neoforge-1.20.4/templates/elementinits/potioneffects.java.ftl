@@ -1,7 +1,7 @@
 <#--
  # MCreator (https://mcreator.net/)
  # Copyright (C) 2012-2020, Pylo
- # Copyright (C) 2020-2024, Pylo, opensource contributors
+ # Copyright (C) 2020-2025, Pylo, opensource contributors
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -29,17 +29,17 @@
 -->
 
 <#-- @formatter:off -->
-<#include "../procedures.java.ftl">
-
 /*
  *	MCreator note: This file will be REGENERATED on each build.
  */
-
 package ${package}.init;
+<#include "../procedures.java.ftl">
 
+<#assign mobHurt = potioneffects?filter(effect -> hasProcedure(effect.onMobHurt))>
+<#assign mobRemoved = potioneffects?filter(effect -> hasProcedure(effect.onMobRemoved))>
 <#assign effects_that_expire = potioneffects?filter(effect -> hasProcedure(effect.onExpired))>
 
-<#if effects_that_expire?size != 0>@Mod.EventBusSubscriber </#if>public class ${JavaModName}MobEffects {
+<#if effects_that_expire?size != 0 || mobHurt?size != 0 || mobRemoved?size != 0>>@Mod.EventBusSubscriber </#if>public class ${JavaModName}MobEffects {
 
 	public static final DeferredRegister<MobEffect> REGISTRY = DeferredRegister.create(Registries.MOB_EFFECT, ${JavaModName}.MODID);
 
@@ -81,6 +81,50 @@ package ${package}.init;
 		</#compress>
 	}
 	</#if>
-}
 
+	<#if mobHurt?size != 0>
+	@SubscribeEvent public static void onMobHurt(LivingHurtEvent event) {
+        <#compress>
+        LivingEntity entity = event.getEntity();
+		<#list mobHurt as effect>
+		if (entity.hasEffect(${JavaModName}MobEffects.${effect.getModElement().getRegistryNameUpper()}.get())) {
+			<@procedureCode effect.onMobHurt, {
+				"x": "entity.getX()",
+				"y": "entity.getY()",
+				"z": "entity.getZ()",
+				"world": "entity.level()",
+				"entity": "entity",
+				"amplifier": "entity.getEffect(" + JavaModName + "MobEffects." + effect.getModElement().getRegistryNameUpper() + ".get()).getAmplifier()",
+				"damagesource": "event.getSource()",
+				"damage": "event.getAmount()"
+			}/>
+        }
+		</#list>
+        </#compress>
+    }
+	</#if>
+
+	<#if mobRemoved?size != 0>
+	@SubscribeEvent public static void onMobRemoved(LivingDeathEvent event) {
+        <#compress>
+        LivingEntity entity = event.getEntity();
+        Entity.RemovalReason reason = entity.getRemovalReason();
+        if (reason != null && reason == Entity.RemovalReason.KILLED) {
+            <#list mobRemoved as effect>
+            if (entity.hasEffect(${JavaModName}MobEffects.${effect.getModElement().getRegistryNameUpper()}.get())) {
+                <@procedureCode effect.onMobRemoved, {
+                    "x": "entity.getX()",
+                    "y": "entity.getY()",
+                    "z": "entity.getZ()",
+                    "world": "entity.level()",
+                    "entity": "entity",
+                    "amplifier": "entity.getEffect(" + JavaModName + "MobEffects." + effect.getModElement().getRegistryNameUpper() + ".get()).getAmplifier()"
+                }/>
+            }
+            </#list>
+        }
+        </#compress>
+    }
+	</#if>
+}
 <#-- @formatter:on -->
