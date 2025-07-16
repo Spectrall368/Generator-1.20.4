@@ -54,15 +54,7 @@ package ${package}.network;
 
 	public static void handleData(final ${name}ButtonMessage message, final PlayPayloadContext context) {
 		if (context.flow() == PacketFlow.SERVERBOUND) {
-			context.workHandler().submitAsync(() -> {
-				Player entity = context.player().get();
-				int buttonID = message.buttonID;
-				int x = message.x;
-				int y = message.y;
-				int z = message.z;
-
-				handleButtonAction(entity, buttonID, x, y, z);
-			}).exceptionally(e -> {
+			context.workHandler().submitAsync(() -> handleButtonAction(context.player().get(), message.buttonID, message.x, message.y, message.z)).exceptionally(e -> {
 				context.packetHandler().disconnect(Component.literal(e.getMessage()));
 				return null;
 			});
@@ -71,7 +63,6 @@ package ${package}.network;
 
 	public static void handleButtonAction(Player entity, int buttonID, int x, int y, int z) {
 		Level world = entity.level();
-		HashMap guistate = ${name}Menu.guistate;
 
 		// security measure to prevent arbitrary chunk generation
 		if (!world.hasChunkAt(new BlockPos(x, y, z)))

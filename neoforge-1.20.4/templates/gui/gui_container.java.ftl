@@ -42,9 +42,15 @@ import ${package}.${JavaModName};
 <#if hasProcedure(data.onTick)>
 @Mod.EventBusSubscriber
 </#if>
-public class ${name}Menu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+public class ${name}Menu extends AbstractContainerMenu implements ${JavaModName}Menus.MenuAccessor {
 
-	public final static HashMap<String, Object> guistate = new HashMap<>();
+	public final Map<String, Object> menuState = new HashMap<>() {
+		@Override public Object put(String key, Object value) {
+			<#-- Prevent arbitrary data storage beyond the menu state -->
+			if (!this.containsKey(key) && this.size() >= ${data.components?size}) return null;
+			return super.put(key, value);
+		}
+	};
 
 	public final Level world;
 	public final Player entity;
@@ -61,7 +67,7 @@ public class ${name}Menu extends AbstractContainerMenu implements Supplier<Map<I
 	private BlockEntity boundBlockEntity = null;
 
 	public ${name}Menu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(${JavaModName}Menus.${data.getModElement().getRegistryNameUpper()}.get(), id);
+		super(${JavaModName}Menus.${REGISTRYNAME}.get(), id);
 
 		this.entity = inv.player;
 		this.world = inv.player.level();
@@ -115,7 +121,7 @@ public class ${name}Menu extends AbstractContainerMenu implements Supplier<Map<I
 						${component.gy(data.height) + 1}) {
 						private final int slot = ${component.id}; <#-- #5209, this is needed for procedure dependencies -->
 						private int x = ${name}Menu.this.x; <#-- #5239 - x and y provided by slot are in-GUI, not in-world coordinates -->
- 						private int y = ${name}Menu.this.y;
+						private int y = ${name}Menu.this.y;
 
 						<#if hasProcedure(component.disablePickup) || component.disablePickup.getFixedValue()>
 						@Override public boolean mayPickup(Player entity) {
@@ -133,7 +139,7 @@ public class ${name}Menu extends AbstractContainerMenu implements Supplier<Map<I
 						<#if hasProcedure(component.onTakenFromSlot)>
 						@Override public void onTake(Player entity, ItemStack stack) {
 							super.onTake(entity, stack);
-							slotChanged(${component.id}, 1, 0);
+							slotChanged(${component.id}, 1, stack.getCount());
 						}
 						</#if>
 
@@ -220,13 +226,15 @@ public class ${name}Menu extends AbstractContainerMenu implements Supplier<Map<I
 					return ItemStack.EMPTY;
 				}
 
-				if (itemstack1.getCount() == 0)
-					slot.set(ItemStack.EMPTY);
-				else
+				if (itemstack1.isEmpty()) {
+					slot.setByPlayer(ItemStack.EMPTY);
+				} else {
 					slot.setChanged();
+				}
 
-				if (itemstack1.getCount() == itemstack.getCount())
+				if (itemstack1.getCount() == itemstack.getCount()) {
 					return ItemStack.EMPTY;
+				}
 
 				slot.onTake(playerIn, itemstack1);
 			}
@@ -292,18 +300,22 @@ public class ${name}Menu extends AbstractContainerMenu implements Supplier<Map<I
 		</#if>
 	</#if>
 
-	public Map<Integer, Slot> get() {
-		return customSlots;
+	@Override public Map<Integer, Slot> getSlots() {
+		return Collections.unmodifiableMap(customSlots);
+	}
+
+	@Override public Map<String, Object> getMenuState() {
+		return menuState;
 	}
 
 	<#if hasProcedure(data.onTick)>
 		@SubscribeEvent public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 			Player entity = event.player;
-			if(event.phase == TickEvent.Phase.END && entity.containerMenu instanceof ${name}Menu) {
-				Level world = entity.level();
-				double x = entity.getX();
-				double y = entity.getY();
-				double z = entity.getZ();
+			if(event.phase == TickEvent.Phase.END && entity.containerMenu instanceof ${name}Menu menu) {
+				Level world = menu.world;
+				double x = menu.x;
+				double y = menu.y;
+				double z = menu.z;
 				<@procedureOBJToCode data.onTick/>
 			}
 		}

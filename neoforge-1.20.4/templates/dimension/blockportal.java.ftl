@@ -89,13 +89,20 @@ public class ${name}PortalBlock extends NetherPortalBlock {
 		<#if data.portalSound.toString()?has_content>
 		if (random.nextInt(110) == 0)
 			world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-					BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation(("${data.portalSound}"))), SoundSource.BLOCKS, 0.5f,
+					BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation("${data.portalSound}")), SoundSource.BLOCKS, 0.5f,
 					random.nextFloat() * 0.4f + 0.8f);
         </#if>
 	}
 
 	@Override public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (entity.canChangeDimensions() && !entity.level().isClientSide() && <@procedureOBJToConditionCode data.portalUseCondition/>) {
+		if (entity.canChangeDimensions() && !entity.level().isClientSide() &&
+		<@procedureCode data.portalUseCondition, {
+        			"x": "pos.getX()",
+        			"y": "pos.getY()",
+        			"z": "pos.getZ()",
+        			"entity": "entity",
+        			"world": "world"
+        		}, false/>) {
 			if (entity.isOnPortalCooldown()) {
 				entity.setPortalCooldown();
 			} else if (entity.level().dimension() != ResourceKey.create(Registries.DIMENSION, new ResourceLocation("${modid}:${registryname}"))) {
