@@ -202,7 +202,7 @@ public class ${name}Block extends
 	public ${name}Block() {
 		<#if data.blockBase?has_content>
 			<#if data.blockBase == "Stairs">
-				super(Blocks.AIR.defaultBlockState(), <@blockProperties/>);
+				super(() -> Blocks.AIR.defaultBlockState(), <@blockProperties/>);
 			<#elseif data.blockBase == "PressurePlate" || data.blockBase == "TrapDoor" || data.blockBase == "Door">
 				super(BlockSetType.${data.blockSetType}, <@blockProperties/>);
 			<#elseif data.blockBase == "Button">

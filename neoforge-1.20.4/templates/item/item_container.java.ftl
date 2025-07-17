@@ -33,7 +33,7 @@
 package ${package}.item.inventory;
 
 <#compress>
-@Mod.EventBusSubscriber public class ${name}InventoryCapability extends ComponentItemHandler {
+@Mod.EventBusSubscriber public class ${name}InventoryCapability extends ItemStackHandler {
 
 	@SubscribeEvent public static void onItemDropped(ItemTossEvent event) {
 		if (event.getEntity().getItem().getItem() == ${JavaModName}Items.${REGISTRYNAME}.get()) {
