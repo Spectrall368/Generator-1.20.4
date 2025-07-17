@@ -14,7 +14,7 @@
           <#list w.normalizeTagElements(tag.resourcePath(), 0, elements) as value>
 			<@tagEntry value value/><#sep>,
           </#list>
-      <#elseif type == "damage_types" || type == "enchantments">
+      <#elseif type == "damage_types">
           <#list w.normalizeTagElements(tag.resourcePath(), 1, elements) as value>
 			<@tagEntry value value.getMappedValue(1)/><#sep>,
           </#list>
