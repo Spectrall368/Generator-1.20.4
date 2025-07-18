@@ -100,14 +100,10 @@ public class ${name}Block extends
  	</#list>
 
 	<#if data.hasGravity>
-	public static final MapCodec<${name}Block> CODEC = simpleCodec(${name}Block::new);
+	public static final MapCodec<${name}Block> CODEC = simpleCodec(properties -> new ${name}Block());
 
-	public MapCodec<${name}Block> codec() {
+	@Override public MapCodec<${name}Block> codec() {
 		return CODEC;
-	}
-
-	public ${name}Block(BlockBehaviour.Properties ignored) {
-		this();
 	}
 	</#if>
 
