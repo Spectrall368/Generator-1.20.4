@@ -43,10 +43,10 @@ public class ${name}Item extends <#if data.hasBannerPatterns()>BannerPattern<#el
 	</#if>
 
 	public ${name}Item() {
-    super(<#if data.hasBannerPatterns()>PROVIDED_PATTERNS
+    super(<#if data.hasBannerPatterns()>PROVIDED_PATTERNS,
                 <#elseif data.isMusicDisc>
-                ${data.musicDiscAnalogOutput}, () -> BuiltInRegistries.SOUND_EVENTS.get(new ResourceLocation("${data.musicDiscMusic}"))
-                </#if>, new Item.Properties()
+                ${data.musicDiscAnalogOutput}, () -> BuiltInRegistries.SOUND_EVENTS.get(new ResourceLocation("${data.musicDiscMusic}")),
+                </#if>new Item.Properties()
 				<#if data.hasInventory()>
 				.stacksTo(1)
 				<#elseif data.damageCount != 0>
