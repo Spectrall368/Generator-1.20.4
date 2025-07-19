@@ -95,13 +95,13 @@ public class ${name}PortalBlock extends NetherPortalBlock {
 	}
 
 	@Override public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (<@procedureCode data.portalUseCondition, {
+		if (<#if hasProcedure(data.portalUseCondition)><@procedureCode data.portalUseCondition, {
         		"x": "pos.getX()",
         		"y": "pos.getY()",
         		"z": "pos.getZ()",
         		"entity": "entity",
         		"world": "world"
-        		}, false/> && entity.canChangeDimensions() && !entity.level().isClientSide()) {
+        		}, false/> && </#if>entity.canChangeDimensions() && !entity.level().isClientSide()) {
 			if (entity.isOnPortalCooldown()) {
 				entity.setPortalCooldown();
 			} else if (entity.level().dimension() != ResourceKey.create(Registries.DIMENSION, new ResourceLocation("${modid}:${registryname}"))) {
