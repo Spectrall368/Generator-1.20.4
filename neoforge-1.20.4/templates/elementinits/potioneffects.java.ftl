@@ -98,7 +98,7 @@ package ${package}.init;
 				"damagesource": "event.getSource()",
 				"damage": "event.getAmount()"
 			}/>
-        }
+		}<#sep>else
 		</#list>
         </#compress>
     }
@@ -120,7 +120,7 @@ package ${package}.init;
                     "entity": "entity",
                     "amplifier": "entity.getEffect(" + JavaModName + "MobEffects." + effect.getModElement().getRegistryNameUpper() + ".get()).getAmplifier()"
                 }/>
-            }
+            }<#sep>else
             </#list>
         }
         </#compress>
