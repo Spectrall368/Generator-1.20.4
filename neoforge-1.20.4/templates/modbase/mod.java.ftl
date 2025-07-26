@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 		<#if w.hasSounds()>${JavaModName}Sounds.REGISTRY.register(modEventBus);</#if>
 		<#if w.hasElementsOfBaseType("block")>${JavaModName}Blocks.REGISTRY.register(modEventBus);</#if>
 		<#if w.hasElementsOfBaseType("blockentity")>${JavaModName}BlockEntities.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfBaseType("item")>${JavaModName}Items.register(modEventBus);</#if>
+		<#if w.hasElementsOfBaseType("item")>${JavaModName}Items.REGISTRY.register(modEventBus);</#if>
 		<#if w.hasElementsOfBaseType("entity")>${JavaModName}Entities.REGISTRY.register(modEventBus);</#if>
 		<#if w.hasItemsInTabs()>${JavaModName}Tabs.REGISTRY.register(modEventBus);</#if>
 		<#if w.hasVariables()>${JavaModName}Variables.ATTACHMENT_TYPES.register(modEventBus);</#if>
@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
 			${JavaModName}FluidTypes.REGISTRY.register(modEventBus);
 		</#if>
 		<#if w.hasElementsOfType("attribute")>${JavaModName}Attributes.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfType("bannerpattern")>${JavaModName}BannerPatterns.REGISTRY.register(modEventBus);</#if>
+		<#if w.hasElementsOfType("bannerpattern")>${JavaModName}BannerPatterns.REGISTRY.register(modEventBus);</#if
 
 		// Start of user code block mod init
 		// End of user code block mod init
