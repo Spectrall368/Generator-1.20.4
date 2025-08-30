@@ -45,7 +45,7 @@ public class ${name}Item extends <#if data.hasBannerPatterns()>BannerPattern<#el
 	public ${name}Item() {
     super(<#if data.hasBannerPatterns()>PROVIDED_PATTERNS,
                 <#elseif data.isMusicDisc>
-                ${data.musicDiscAnalogOutput}, () -> BuiltInRegistries.SOUND_EVENTS.get(new ResourceLocation("${data.musicDiscMusic}")),
+                ${data.musicDiscAnalogOutput}, () -> BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation("${data.musicDiscMusic}")),
                 </#if>new Item.Properties()
 				<#if data.hasInventory()>
 				.stacksTo(1)
