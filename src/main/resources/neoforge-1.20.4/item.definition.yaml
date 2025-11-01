@@ -64,10 +64,6 @@ list_templates:
         name: "@MODASSETSROOT/models/item/@registryname_@itemindex.json"
 
 tags:
-  - tag: ITEMS:minecraft:meat
-    condition:
-      - isFood
-      - isMeat
   - tag: ITEMS:minecraft:music_discs
     condition: isMusicDisc
   - tag: ITEMS:minecraft:piglin_loved
