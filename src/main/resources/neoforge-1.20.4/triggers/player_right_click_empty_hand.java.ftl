@@ -1,7 +1,7 @@
 <#include "procedures.java.ftl">
 @Mod.EventBusSubscriber(value = {Dist.CLIENT}) public class ${name}Procedure {
 	@SubscribeEvent public static void onRightClick(PlayerInteractEvent.RightClickEmpty event) {
-		<#assign dependenciesCode><#compress>
+		<#assign dependenciesCode>
 			<@procedureDependenciesCode dependencies, {
 				"x": "event.getPos().getX()",
 				"y": "event.getPos().getY()",
@@ -9,7 +9,7 @@
 				"world": "event.getLevel()",
 				"entity": "event.getEntity()"
 			}/>
-		</#compress></#assign>
+		</#assign>
 		<#-- fix #5491, event is fired for both hands always, so we can filter by either -->
 		if (event.getHand() != InteractionHand.MAIN_HAND) return;
 		PacketDistributor.SERVER.noArg().send(new ${name}Message());
@@ -35,7 +35,7 @@
 				context.workHandler().submitAsync(() -> {
 					if (!context.player().get().level().hasChunkAt(context.player().get().blockPosition()))
 						return;
-					<#assign dependenciesCode><#compress>
+					<#assign dependenciesCode>
 						<@procedureDependenciesCode dependencies, {
 							"x": "context.player().get().getX()",
 							"y": "context.player().get().getY()",
@@ -43,7 +43,7 @@
 							"world": "context.player().get().level()",
 							"entity": "context.player().get()"
 						}/>
-					</#compress></#assign>
+					</#assign>
 					execute(${dependenciesCode});
 				}).exceptionally(e -> {
 					context.packetHandler().disconnect(Component.literal(e.getMessage()));

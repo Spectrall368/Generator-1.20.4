@@ -1,6 +1,6 @@
 name: NeoForge for @minecraft (@buildfileversion)
 status: deprecated
-buildfileversion: 20.4.250
+buildfileversion: 20.4.251
 subversion: 1.3 # force setup re-run to update build script for MCREATOR_JVM_OPTIONS
 
 import:

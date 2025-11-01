@@ -35,7 +35,7 @@ package ${package}.client.screens;
 
 <#assign hasEntityModels = false>
 
-@Mod.EventBusSubscriber({Dist.CLIENT}) public class ${name}Overlay {
+@Mod.EventBusSubscriber(Dist.CLIENT) public class ${name}Overlay {
 
 	@SubscribeEvent(priority = EventPriority.${data.priority})
 	<#if generator.map(data.overlayTarget, "screens") == "Ingame">

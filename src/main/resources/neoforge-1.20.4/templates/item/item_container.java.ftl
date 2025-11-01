@@ -32,7 +32,7 @@
 
 package ${package}.item.inventory;
 
-<#compress>
+<@javacompress>
 @Mod.EventBusSubscriber public class ${name}InventoryCapability extends ItemStackHandler {
 
 	@SubscribeEvent public static void onItemDropped(ItemTossEvent event) {
@@ -61,6 +61,6 @@ package ${package}.item.inventory;
 	}
 
 }
-</#compress>
+</@javacompress>
 
 <#-- @formatter:on -->

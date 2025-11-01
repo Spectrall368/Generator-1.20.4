@@ -20,7 +20,15 @@ unmodifiable_ai_bases: [ Bat, MagmaCube, Slime ]
 
 tags:
   - tag: ENTITIES:minecraft:raiders
-    condition: "${data.mobBehaviourType == 'Raider'}"
+    condition: "mobBehaviourType %= Raider"
+  - tag: ENTITIES:minecraft:undead
+    condition: "mobCreatureType %= UNDEAD"
+  - tag: ENTITIES:minecraft:arthropod
+    condition: "mobCreatureType %= ARTHROPOD"
+  - tag: ENTITIES:minecraft:illager
+    condition: "mobCreatureType %= ILLAGER"
+  - tag: ENTITIES:minecraft:aquatic
+    condition: "mobCreatureType %= WATER"
 
   - tag: GAME_EVENTS:minecraft:@registryname_can_listen
     condition:

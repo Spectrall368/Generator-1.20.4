@@ -37,8 +37,9 @@ package ${package}.client.gui;
 <#assign buttons = data.getComponentsOfType("Button")>
 <#assign imageButtons = data.getComponentsOfType("ImageButton")>
 <#assign tooltips = data.getComponentsOfType("Tooltip")>
+<#assign sliders = data.getComponentsOfType("Slider")>
 
-<#compress>
+<@javacompress>
 public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implements ${JavaModName}Screens.ScreenAccessor {
 
 	private final Level world;
@@ -48,19 +49,23 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implemen
 	private boolean menuStateUpdateActive = false;
 
 	<#list textFields as component>
-	EditBox ${component.getName()};
+	private EditBox ${component.getName()};
 	</#list>
 
 	<#list checkboxes as component>
-	Checkbox ${component.getName()};
+	private Checkbox ${component.getName()};
 	</#list>
 
 	<#list buttons as component>
-	Button ${component.getName()};
+	private Button ${component.getName()};
 	</#list>
 
 	<#list imageButtons as component>
-	ImageButton ${component.getName()};
+	private ImageButton ${component.getName()};
+	</#list>
+
+	<#list sliders as component>
+	private ExtendedSlider ${component.getName()};
 	</#list>
 
 	public ${name}Screen(${name}Menu container, Inventory inventory, Component text) {
@@ -86,7 +91,24 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implemen
 		}
 		</#if>
 
-		<#-- updateMenuState is not implemented for checkboxes, as there is no procedure block to set checkbox state currently -->
+		<#if checkboxes?has_content>
+		if (elementType == 1 && elementState instanceof Boolean logicState) {
+			<#list checkboxes as component>
+				<#if !component?is_first>else</#if> if (name.equals("${component.getName()}")) {
+					if (${component.getName()}.selected() != logicState) ${component.getName()}.onPress();
+				}
+			</#list>
+		}
+		</#if>
+
+		<#if sliders?has_content>
+		if (elementType == 2 && elementState instanceof Number n) {
+			<#list sliders as component>
+				<#if !component?is_first>else</#if> if (name.equals("${component.getName()}"))
+					${component.getName()}.setValue(n.doubleValue());
+			</#list>
+		}
+		</#if>
 
 		menuStateUpdateActive = false;
 	}
@@ -108,7 +130,6 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implemen
 		${component.getName()}.render(guiGraphics, mouseX, mouseY, partialTicks);
 		</#list>
 
-		<#compress>
 		<#list data.getComponentsOfType("EntityModel") as component>
 			<#assign followMouse = component.followMouseMovement>
 			<#assign x = component.gx(data.width)>
@@ -122,7 +143,6 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implemen
 					<#if followMouse>(float) Math.atan((this.topPos + ${y + 21 - 50} - mouseY) / 40.0)<#else>0</#if>, livingEntity);
 			}
 		</#list>
-		</#compress>
 
 		<#if tooltips?has_content>
 		boolean customTooltipShown = false;
@@ -201,6 +221,13 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implemen
 		return super.keyPressed(key, b, c);
 	}
 
+	<#if sliders?has_content> <#-- AbstractContainerScreen overrides it for slots only, causing a bug with Sliders, so we override it again -->
+	@Override public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+		return (this.getFocused() != null && this.isDragging() && button == 0) ? this.getFocused().mouseDragged(mouseX, mouseY, button, dragX, dragY)
+			: super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+	}
+	</#if>
+
 	<#if textFields?has_content>
 	@Override public void resize(Minecraft minecraft, int width, int height) {
 		<#list textFields as component>
@@ -273,8 +300,10 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implemen
 				</#if>
 				<@buttonOnClick component/>
 			) {
-				@Override public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+				@Override public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 					<#if hasProcedure(component.displayCondition)>
+					int x = ${name}Screen.this.x; <#-- x and y provided by buttons are in-GUI, not in-world coordinates -->
+					int y = ${name}Screen.this.y;
 					if (<@procedureOBJToConditionCode component.displayCondition/>)
 					</#if>
 					guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
@@ -303,6 +332,28 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implemen
 
 			this.addRenderableWidget(${component.getName()});
 		</#list>
+
+		<#assign slid = 0>
+		<#list sliders as component>
+			${component.getName()} = new ExtendedSlider(this.leftPos + ${component.gx(data.width)}, this.topPos + ${component.gy(data.height)},
+				${component.getWidth(w.getWorkspace())}, ${component.getHeight(w.getWorkspace())}, Component.translatable(
+				"gui.${modid}.${registryname}.${component.getName()}_prefix"), Component.translatable("gui.${modid}.${registryname}.${component.getName()}_suffix"),
+				${component.min}, ${component.max}, ${component.value}, ${component.step}, 0, true) {
+					@Override protected void applyValue() {
+						if (!menuStateUpdateActive)
+							menu.sendMenuStateUpdate(entity, 2, "${component.getName()}", this.getValue(), false);
+						<#if hasProcedure(component.whenSliderMoves)>
+							PacketDistributor.SERVER.with().send(new ${name}SliderMessage(${slid}, x, y, z, this.getValue()));
+							${name}SliderMessage.handleSliderAction(entity, ${btid}, x, y, z, this.getValue());
+						</#if>
+					}
+				};
+			this.addRenderableWidget(${component.getName()});
+			if (!menuStateUpdateActive)
+				menu.sendMenuStateUpdate(entity, 2, "${component.getName()}", ${component.getName()}.getValue(), false);
+
+			<#assign slid +=1>
+		</#list>
 	}
 
 	<#if data.getComponentsOfType("Button")?filter(component -> hasProcedure(component.displayCondition))?size != 0>
@@ -318,7 +369,7 @@ public class ${name}Screen extends AbstractContainerScreen<${name}Menu> implemen
 	</#if>
 
 }
-</#compress>
+</@javacompress>
 
 <#macro buttonOnClick component>
 e -> {

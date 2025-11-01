@@ -64,7 +64,7 @@ package ${package}.init;
 	}
 
 	private static void expireEffects(Entity entity, MobEffectInstance effectInstance) {
-		<#compress>
+		<@javacompress>
 		MobEffect effect = effectInstance.getEffect();
 		<#list effects_that_expire as effect>
 		if (effect == ${effect.getModElement().getRegistryNameUpper()}.get()) {
@@ -78,7 +78,7 @@ package ${package}.init;
 			}/>
 		}<#sep>else
 		</#list>
-		</#compress>
+		</@javacompress>
 	}
 	</#if>
 
