@@ -40,8 +40,8 @@ import org.apache.logging.log4j.Logger;
 			${JavaModName}FluidTypes.REGISTRY.register(modEventBus);
 		</#if>
 		<#if types["attributes"]??>${JavaModName}Attributes.REGISTRY.register(modEventBus);</#if>
-		</@javacompress>
 		<#if w.hasElementsOfType("bannerpattern")>${JavaModName}BannerPatterns.REGISTRY.register(modEventBus);</#if>
+		</@javacompress>
 
 		// Start of user code block mod init
 		// End of user code block mod init
