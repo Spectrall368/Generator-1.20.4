@@ -1,5 +1,5 @@
 <#include "procedures.java.ftl">
-@EventBusSubscriber public class ${name}Procedure {
+@Mod.EventBusSubscriber public class ${name}Procedure {
 	@SubscribeEvent public static void whenEntityChangeEquipment(LivingEquipmentChangeEvent event) {
 		<#assign dependenciesCode>
 			<@procedureDependenciesCode dependencies, {

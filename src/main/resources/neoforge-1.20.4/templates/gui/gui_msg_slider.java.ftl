@@ -55,7 +55,7 @@ package ${package}.network;
 
 	public static void handleData(final ${name}SliderMessage message, final PlayPayloadContext context) {
 		if (context.flow() == PacketFlow.SERVERBOUND) {
-			context.workHandler().submitAsync(() -> handleSliderAction(context.player(), message.sliderID, message.x, message.y, message.z, message.value)).exceptionally(e -> {
+			context.workHandler().submitAsync(() -> handleSliderAction(context.player().get(), message.sliderID, message.x, message.y, message.z, message.value)).exceptionally(e -> {
 				context.packetHandler().disconnect(Component.literal(e.getMessage()));
 				return null;
 			});

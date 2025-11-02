@@ -306,7 +306,7 @@ public class ${name}Menu extends AbstractContainerMenu implements ${JavaModName}
 
 	<#if hasProcedure(data.onTick)>
 	@SubscribeEvent public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		Player entity = event.getEntity();
+		Player entity = event.player;
 		if(event.phase == TickEvent.Phase.END && entity.containerMenu instanceof ${name}Menu menu) {
 			Level world = menu.world;
 			double x = menu.x;
