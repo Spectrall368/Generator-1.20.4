@@ -15,6 +15,7 @@ public-f net.minecraft.world.level.levelgen.feature.TreeFeature place(Lnet/minec
 
 <#if w.hasElementsOfType("procedure")>
 public net.minecraft.world.entity.ai.attributes.AttributeModifier name # name
+public net.minecraft.world.entity.ai.attributes.AttributeInstance removeModifier(Lnet/minecraft/world/entity/ai/attributes/AttributeModifier;)V # removeModifier
 </#if>
 
 # Start of user code block custom ATs
