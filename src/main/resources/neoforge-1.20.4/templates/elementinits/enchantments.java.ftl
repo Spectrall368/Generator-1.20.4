@@ -42,7 +42,7 @@ public class ${JavaModName}Enchantments {
 
 	<#list enchantments as enchantment>
 	public static final DeferredHolder<Enchantment, Enchantment> ${enchantment.getModElement().getRegistryNameUpper()} =
-		REGISTRY.register("${enchantment.getModElement().getRegistryName()}", () -> new ${enchantment.getModElement().getName()}Enchantment());
+		REGISTRY.register("${enchantment.getModElement().getRegistryName()}", ${enchantment.getModElement().getName()}Enchantment::new);
 	</#list>
 
 }

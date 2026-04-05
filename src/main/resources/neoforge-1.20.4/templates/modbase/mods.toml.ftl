@@ -31,7 +31,7 @@ displayTest="IGNORE_SERVER_VERSION"
 # Start of user code block mod configuration
 # End of user code block mod configuration
 
-<#if w.getGElementsOfType('biome')?filter(e -> e.spawnBiome || e.spawnInCaves || e.spawnBiomeNether)?size != 0>
+<#if w.getGElementsOfType('biome')?filter(e -> e.spawnBiome || e.spawnInCaves || e.spawnBiomeNether)?size != 0 || w.getGElementsOfType("block")?filter(e -> e.isSign())?size != 0>
 [[mixins]]
     config = "${settings.getModID()}.mixins.json"
 </#if>
@@ -57,7 +57,7 @@ displayTest="IGNORE_SERVER_VERSION"
 [[dependencies.${settings.getModID()}]]
     modId="${e}"
     type="required"
-    versionRange="[0,)"
+    versionRange="${settings.getVersionRange(e)}"
     ordering="NONE"
     side="BOTH"
 </#list>
@@ -66,7 +66,7 @@ displayTest="IGNORE_SERVER_VERSION"
 [[dependencies.${settings.getModID()}]]
     modId="${e}"
     type="optional"
-    versionRange="[0,)"
+    versionRange="${settings.getVersionRange(e)}"
     ordering="NONE"
     side="BOTH"
 </#list>

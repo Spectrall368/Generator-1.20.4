@@ -33,7 +33,7 @@
 </#function>
 
 <#function toBlockPos x y z>
-    <#if x?starts_with("/*@int*/") && y?starts_with("/*@int*/") && z?starts_with("/*@int*/")>
+    <#if x?trim?starts_with("/*@int*/") && y?trim?starts_with("/*@int*/") && z?trim?starts_with("/*@int*/")>
         <#return "new BlockPos(" + opt.removeParentheses(x) + "," + opt.removeParentheses(y) + "," + opt.removeParentheses(z) +")">
     <#else>
         <#return "BlockPos.containing(" + opt.removeParentheses(x) + "," + opt.removeParentheses(y) + "," + opt.removeParentheses(z) +")">
@@ -44,7 +44,7 @@
 	<#if featureType == "placed_feature_inline">
 		<#return featureConfig>
 	<#elseif featureType == "configured_feature_reference">
- 		<#return '{"feature": ' + featureConfig + ', "placement": [' + placement?remove_ending(",") + ']}'>
+		<#return '{"feature": ' + featureConfig + ', "placement": [' + placement?remove_ending(",") + ']}'>
 	<#else>
 		<#return '{"feature": {"type": "' + generator.map(featureType, "features", 2)?replace("@modid",modid) + '", "config": '
 			+ featureConfig + '}, "placement": [' + placement?remove_ending(",") + ']}'>

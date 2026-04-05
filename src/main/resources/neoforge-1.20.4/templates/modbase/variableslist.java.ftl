@@ -3,14 +3,12 @@ package ${package}.network;
 
 import ${package}.${JavaModName};
 
-import net.minecraft.nbt.Tag;
-
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD) public class ${JavaModName}Variables {
 
 	public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, ${JavaModName}.MODID);
 
 	<#if w.hasVariablesOfScope("PLAYER_LIFETIME") || w.hasVariablesOfScope("PLAYER_PERSISTENT")>
-	public static final Supplier<AttachmentType<PlayerVariables>> PLAYER_VARIABLES = ATTACHMENT_TYPES.register("player_variables", () -> AttachmentType.serializable(() -> new PlayerVariables()).build());
+	public static final Supplier<AttachmentType<PlayerVariables>> PLAYER_VARIABLES = ATTACHMENT_TYPES.register("player_variables", () -> AttachmentType.serializable(PlayerVariables::new).build());
 	</#if>
 
 	<#if w.hasVariablesOfScope("GLOBAL_SESSION")>
@@ -78,8 +76,8 @@ import net.minecraft.nbt.Tag;
         <#if w.hasVariablesOfScope("GLOBAL_WORLD") || w.hasVariablesOfScope("GLOBAL_MAP")>
         @SubscribeEvent public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
             if (event.getEntity() instanceof ServerPlayer player) {
-                SavedData mapdata = MapVariables.get(event.getEntity().level());
-                SavedData worlddata = WorldVariables.get(event.getEntity().level());
+                SavedData mapdata = MapVariables.get(player.level());
+                SavedData worlddata = WorldVariables.get(player.level());
                 if(mapdata != null)
                     PacketDistributor.PLAYER.with(player).send(new SavedDataSyncMessage(0, mapdata));
                 if(worlddata != null)
@@ -89,7 +87,7 @@ import net.minecraft.nbt.Tag;
 
         @SubscribeEvent public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
             if (event.getEntity() instanceof ServerPlayer player) {
-                SavedData worlddata = WorldVariables.get(event.getEntity().level());
+                SavedData worlddata = WorldVariables.get(player.level());
                 if(worlddata != null)
                     PacketDistributor.PLAYER.with(player).send(new SavedDataSyncMessage(1, worlddata));
             }

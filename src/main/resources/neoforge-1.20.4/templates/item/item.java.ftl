@@ -184,10 +184,17 @@ public class ${name}Item extends <#if data.hasBannerPatterns()>BannerPattern<#el
 	}
 	</#if>
 
+	<#if data.damageCount != 0 && data.repairItems?has_content>
+	@Override public boolean isValidRepairItem(ItemStack itemstack, ItemStack repairitem) {
+		return ${mappedMCItemsToIngredient(data.repairItems)}.test(repairitem);
+	}
+	</#if>
+
 	<@addSpecialInformation data.specialInformation, "item." + modid + "." + registryname/>
 
 	<#assign shouldExplicitlyCallStartUsing = !data.isFood && (data.useDuration > 0)> <#-- ranged items handled in if below so no need to check for that here too -->
- 	<#if hasProcedure(data.onRightClickedInAir) || data.hasInventory() || data.enableRanged || shouldExplicitlyCallStartUsing>
+	<#assign rightClickingOpensGUI = data.openGUIOnRightClick?? && (hasProcedure(data.openGUIOnRightClick) || data.openGUIOnRightClick.getFixedValue())>
+	<#if hasProcedure(data.onRightClickedInAir) || data.enableRanged || shouldExplicitlyCallStartUsing || (data.hasInventory() && rightClickingOpensGUI)>
 	@Override public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
 		<#if data.enableRanged>
 		InteractionResultHolder<ItemStack> ar = InteractionResultHolder.fail(entity.getItemInHand(hand));
@@ -207,15 +214,25 @@ public class ${name}Item extends <#if data.hasBannerPatterns()>BannerPattern<#el
  			}, false/>)
  			</#if>
  			if (entity.getAbilities().instabuild || findAmmo(entity) != ItemStack.EMPTY) {
- 				ar = InteractionResultHolder.success(entity.getItemInHand(hand));
+ 				ar = InteractionResultHolder.consume(entity.getItemInHand(hand));
  				entity.startUsingItem(hand);
  			}
  		<#elseif shouldExplicitlyCallStartUsing>
  			entity.startUsingItem(hand);
 		</#if>
 
-		<#if data.hasInventory()>
+		<#if data.hasInventory() && rightClickingOpensGUI>
 		if (entity instanceof ServerPlayer serverPlayer) {
+			<#if hasProcedure(data.openGUIOnRightClick)>
+			if (<@procedureCode data.openGUIOnRightClick, {
+				"x": "serverPlayer.getX()",
+				"y": "serverPlayer.getY()",
+				"z": "serverPlayer.getZ()",
+				"world": "serverPlayer.level()",
+				"entity": "serverPlayer",
+				"itemstack": "ar.getObject()"
+			}, false/>) {
+			</#if>
 			serverPlayer.openMenu(new MenuProvider() {
 				@Override public Component getDisplayName() {
 					return Component.literal("${data.name}");
@@ -231,6 +248,7 @@ public class ${name}Item extends <#if data.hasBannerPatterns()>BannerPattern<#el
 				buf.writeBlockPos(entity.blockPosition());
 				buf.writeByte(hand == InteractionHand.MAIN_HAND ? 0 : 1);
 			});
+			<#if hasProcedure(data.openGUIOnRightClick)>}</#if>
 		}
 		</#if>
 

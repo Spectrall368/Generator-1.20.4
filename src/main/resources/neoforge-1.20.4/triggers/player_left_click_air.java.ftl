@@ -31,8 +31,10 @@
 		public static void handleData(final ${name}Message message, final PlayPayloadContext context) {
 			if (context.flow() == PacketFlow.SERVERBOUND) {
 				context.workHandler().submitAsync(() -> {
-					if (!context.player().get().level().hasChunkAt(context.player().get().blockPosition()))
-						return;
+					if (!context.player().get().level().getChunkSource().hasChunk(
+						SectionPos.blockToSectionCoord(context.player().get().getX()),
+						SectionPos.blockToSectionCoord(context.player().get().getZ())
+					)) return;
 					<#assign dependenciesCode>
 						<@procedureDependenciesCode dependencies, {
 							"x": "context.player().get().getX()",
