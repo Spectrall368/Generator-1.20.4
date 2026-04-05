@@ -292,41 +292,79 @@ public class ${name}Item extends FishingRodItem {
 <#macro itemAttributeModifiers includeMeleeAttributes=false>
     @Override public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot equipmentSlot, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> defaultModifiers = super.getAttributeModifiers(equipmentSlot, stack);
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = null;
 
-        <#if includeMeleeAttributes>
+        <#assign hasGlobal = false>
+        <#list data.attributeModifiers as modifier>
+            <#assign eqCheck = generator.map(modifier.equipmentSlot, "equipmentslots", 2)>
+            <#if eqCheck?contains("()") && modifier.amount != 0>
+                <#assign hasGlobal = true>
+            </#if>
+        </#list>
+
+        <#if hasGlobal>
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        builder.putAll(defaultModifiers);
+        <#else>
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = null;
+        </#if>
+
+        <#if includeMeleeAttributes && ((data.damageVsEntity - 1) != 0 || (data.attackSpeed - 4) != 0)>
         if (equipmentSlot == EquipmentSlot.MAINHAND) {
+            <#if !hasGlobal>
             builder = initializeBuilder(builder, defaultModifiers);
+            </#if>
+
+            <#if (data.damageVsEntity - 1) != 0>
             builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", ${data.damageVsEntity - 1}, AttributeModifier.Operation.ADDITION));
+            </#if>
+            <#if (data.attackSpeed - 4) != 0>
             builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", ${data.attackSpeed - 4}, AttributeModifier.Operation.ADDITION));
+            </#if>
         }
         </#if>
 
         <#assign sortedModifiers = data.attributeModifiers?sort_by("equipmentSlot")>
         <#assign currentSlot = "">
+
         <#list sortedModifiers as modifier>
+            <#assign eq = generator.map(modifier.equipmentSlot, "equipmentslots", 2)>
+
+            <#if modifier.amount == 0>
+                <#continue>
+            </#if>
+
             <#if modifier.equipmentSlot != currentSlot>
-                <#if currentSlot != "" && eq?? && !eq?contains("()")>
+                <#if currentSlot != "" && !prevGlobal>
         }
                 </#if>
-                <#assign currentSlot = modifier.equipmentSlot>
 
-        <#assign eq = generator.map(modifier.equipmentSlot, "equipmentslots", 2)>
-        <#if !eq?contains("()")>
+                <#assign currentSlot = modifier.equipmentSlot>
+                <#assign prevGlobal = eq?contains("()")>
+
+                <#if !prevGlobal>
         if (<#if eq?contains(",")>List.of(${eq}).contains(equipmentSlot)<#else>equipmentSlot == ${eq}</#if>) {
-        </#if>
+                </#if>
+
+                <#if !hasGlobal>
             builder = initializeBuilder(builder, defaultModifiers);
+                </#if>
             </#if>
+
             builder.put(${modifier.attribute}, new AttributeModifier("${w.getUUID(registryname + "_" + modifier?index)}", ${modifier.amount}, AttributeModifier.Operation.${getAttributeOperation(modifier.operation)}));
         </#list>
-        <#if !eq?contains("()") && currentSlot != "">
+
+        <#if currentSlot != "" && !prevGlobal>
         }
         </#if>
 
         return (builder != null) ? builder.build() : defaultModifiers;
     }
 
-    private static ImmutableMultimap.Builder<Attribute, AttributeModifier> initializeBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder, Multimap<Attribute, AttributeModifier> defaults) {
+    <#if !hasGlobal>
+    private static ImmutableMultimap.Builder<Attribute, AttributeModifier> initializeBuilder(
+            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder,
+            Multimap<Attribute, AttributeModifier> defaults) {
+
         if (builder == null) {
             builder = ImmutableMultimap.builder();
             builder.putAll(defaults);
@@ -334,6 +372,7 @@ public class ${name}Item extends FishingRodItem {
 
         return builder;
     }
+    </#if>
 </#macro>
 
 <#macro commonMethods>
