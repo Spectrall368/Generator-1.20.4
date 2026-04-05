@@ -42,7 +42,7 @@ package ${package}.init;
 <#assign itemextensions = w.getGElementsOfType("itemextension")?filter(e -> e.hasDispenseBehavior)>
 <#assign specialentities = w.getGElementsOfType("specialentity")>
 <@javacompress>
-@EventBusSubscriber public class ${JavaModName}DispenseBehaviors {
+@Mod.EventBusSubscriber public class ${JavaModName}DispenseBehaviors {
 
 	@SubscribeEvent public static void init(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {

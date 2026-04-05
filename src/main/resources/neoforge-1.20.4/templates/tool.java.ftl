@@ -97,6 +97,9 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
 		<#elseif data.toolType == "Shears" || data.toolType == "Shield">
 			new Item.Properties()
 				.durability(${data.usageCount})
+				<#if data.rarity != "COMMON">
+				.rarity(Rarity.${data.rarity})
+				</#if>
 				<#if data.immuneToFire>
 				.fireResistant()
 				</#if>
@@ -115,16 +118,18 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
 	}
 	</#if>
 
-	<#if data.toolType == "Shield" && data.repairItems?has_content>
+	<#if (data.toolType == "Shield" || data.toolType == "Shears") && data.repairItems?has_content>
 	@Override public boolean isValidRepairItem(ItemStack itemstack, ItemStack repairitem) {
 		return ${mappedMCItemsToIngredient(data.repairItems)}.test(repairitem);
 	}
 	</#if>
 
 	<#if data.toolType=="Shears">
-		@Override public int getEnchantmentValue() {
-			return ${data.enchantability};
-		}
+        <#if data.enchantability != 0>
+        @Override public int getEnchantmentValue(ItemStack itemstack) {
+            return ${data.enchantability};
+        }
+        </#if>
 
 		@Override public float getDestroySpeed(ItemStack stack, BlockState blockstate) {
 			return ${data.efficiency}f;
@@ -159,18 +164,10 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
 		@Override public float getDestroySpeed(ItemStack itemstack, BlockState blockstate) {
 			return ${data.efficiency}f;
 		}
+	</#if>
 
-		@Override public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
-			if (equipmentSlot == EquipmentSlot.MAINHAND) {
-				ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-				builder.putAll(super.getDefaultAttributeModifiers(equipmentSlot));
-				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", ${data.damageVsEntity - 1}f, AttributeModifier.Operation.ADDITION));
-				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", ${data.attackSpeed - 4}, AttributeModifier.Operation.ADDITION));
-				return builder.build();
-			}
-
-			return super.getDefaultAttributeModifiers(equipmentSlot);
-		}
+	<#if data.toolType == "MultiTool" || data.attributeModifiers?size gt 0>
+	<@itemAttributeModifiers (data.toolType != "Shield" && data.toolType != "Shears")/>
 	</#if>
 
 	<#if data.toolType=="MultiTool">
@@ -194,6 +191,9 @@ public class ${name}Item extends Item {
 	public ${name}Item() {
 		super(new Item.Properties()
 			.durability(${data.usageCount})
+			<#if data.rarity != "COMMON">
+			.rarity(Rarity.${data.rarity})
+			</#if>
 			<#if data.immuneToFire>
 			.fireResistant()
 			</#if>
@@ -213,21 +213,19 @@ public class ${name}Item extends Item {
 
 	<@onRightClickedInAir data.onRightClickedInAir/>
 
-	@Override public int getEnchantmentValue() {
+	<#if data.enchantability != 0>
+	@Override public int getEnchantmentValue(ItemStack itemstack) {
 		return ${data.enchantability};
 	}
+	</#if>
 
-	@Override public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
-		if (equipmentSlot == EquipmentSlot.MAINHAND) {
-			ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-			builder.putAll(super.getDefaultAttributeModifiers(equipmentSlot));
-			builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", ${data.damageVsEntity - 1}f, AttributeModifier.Operation.ADDITION));
-			builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", ${data.attackSpeed - 4}, AttributeModifier.Operation.ADDITION));
-			return builder.build();
+	<@itemAttributeModifiers true/>
+
+	<#if data.repairItems?has_content>
+		@Override public boolean isValidRepairItem(ItemStack itemstack, ItemStack repairitem) {
+			return ${mappedMCItemsToIngredient(data.repairItems)}.test(repairitem);
 		}
-
-		return super.getDefaultAttributeModifiers(equipmentSlot);
-	}
+	</#if>
 
 	<@commonMethods/>
 }
@@ -237,6 +235,9 @@ public class ${name}Item extends FishingRodItem {
 	public ${name}Item() {
 		super(new Item.Properties()
 			.durability(${data.usageCount})
+			<#if data.rarity != "COMMON">
+			.rarity(Rarity.${data.rarity})
+			</#if>
 			<#if data.immuneToFire>
 			.fireResistant()
 			</#if>
@@ -252,9 +253,11 @@ public class ${name}Item extends FishingRodItem {
     	}
 	</#if>
 
-	@Override public int getEnchantmentValue() {
+	<#if data.enchantability != 1>
+	@Override public int getEnchantmentValue(ItemStack itemstack) {
 		return ${data.enchantability};
 	}
+	</#if>
 
 	<@onBlockDestroyedWith data.onBlockDestroyedWithTool/>
 
@@ -277,10 +280,61 @@ public class ${name}Item extends FishingRodItem {
 	}
 	</#if>
 
+	<#if data.attributeModifiers?size gt 0>
+	<@itemAttributeModifiers/>
+	</#if>
+
 	<@commonMethods/>
 }
 </#if>
 </@javacompress>
+
+<#macro itemAttributeModifiers includeMeleeAttributes=false>
+    @Override public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot equipmentSlot, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> defaultModifiers = super.getAttributeModifiers(equipmentSlot, stack);
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = null;
+
+        <#if includeMeleeAttributes>
+        if (equipmentSlot == EquipmentSlot.MAINHAND) {
+            builder = initializeBuilder(builder, defaultModifiers);
+            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", ${data.damageVsEntity - 1}, AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", ${data.attackSpeed - 4}, AttributeModifier.Operation.ADDITION));
+        }
+        </#if>
+
+        <#assign sortedModifiers = data.attributeModifiers?sort_by("equipmentSlot")>
+        <#assign currentSlot = "">
+        <#list sortedModifiers as modifier>
+            <#if modifier.equipmentSlot != currentSlot>
+                <#if currentSlot != "" && eq?? && !eq?contains("()")>
+        }
+                </#if>
+                <#assign currentSlot = modifier.equipmentSlot>
+
+        <#assign eq = generator.map(modifier.equipmentSlot, "equipmentslots", 2)>
+        <#if !eq?contains("()")>
+        if (<#if eq?contains(",")>List.of(${eq}).contains(equipmentSlot)<#else>equipmentSlot == ${eq}</#if>) {
+        </#if>
+            builder = initializeBuilder(builder, defaultModifiers);
+            </#if>
+            builder.put(${modifier.attribute}, new AttributeModifier("${w.getUUID(registryname + "_" + modifier?index)}", ${modifier.amount}, AttributeModifier.Operation.${getAttributeOperation(modifier.operation)}));
+        </#list>
+        <#if !eq?contains("()") && currentSlot != "">
+        }
+        </#if>
+
+        return (builder != null) ? builder.build() : defaultModifiers;
+    }
+
+    private static ImmutableMultimap.Builder<Attribute, AttributeModifier> initializeBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder, Multimap<Attribute, AttributeModifier> defaults) {
+        if (builder == null) {
+            builder = ImmutableMultimap.builder();
+            builder.putAll(defaults);
+        }
+
+        return builder;
+    }
+</#macro>
 
 <#macro commonMethods>
 	<#if data.stayInGridWhenCrafting>
@@ -314,7 +368,20 @@ public class ${name}Item extends FishingRodItem {
 
 	<@onItemTick data.onItemInUseTick, data.onItemInInventoryTick/>
 
+	<@onDroppedByPlayer data.onDroppedByPlayer/>
+
+	<@onItemEntityDestroyed data.onItemEntityDestroyed/>
+
 	<@hasGlow data.glowCondition/>
 
 </#macro>
 <#-- @formatter:on -->
+<#function getAttributeOperation operation>
+ 	<#if operation == "ADD_VALUE">
+ 		<#return "ADDITION">
+ 	<#elseif operation == "ADD_MULTIPLIED_BASE">
+ 		<#return "MULTIPLY_BASE">
+ 	<#else>
+ 		<#return "MULTIPLY_TOTAL">
+ 	</#if>
+</#function>
