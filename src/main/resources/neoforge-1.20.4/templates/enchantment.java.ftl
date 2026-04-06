@@ -65,7 +65,11 @@ public class ${name}Enchantment extends Enchantment {
 		</#if>
 
 	public ${name}Enchantment() {
-		super(Enchantment.Rarity.<@weightToRarity data.weight/>, ENCHANTMENT_CATEGORY, ${generator.map(data.supportedSlots, "equipmentslots", 2)});
+		this(${generator.map(data.supportedSlots, "equipmentslots", 2)});
+	}
+
+	private ${name}Enchantment(EquipmentSlot... slots) {
+		super(Enchantment.Rarity.<@weightToRarity data.weight/>, ENCHANTMENT_CATEGORY, slots);
 	}
 
 	@Override public int getMinCost(int level) {
