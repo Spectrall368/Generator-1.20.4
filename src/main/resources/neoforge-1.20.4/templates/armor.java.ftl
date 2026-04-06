@@ -107,11 +107,12 @@ public abstract class ${name}Item extends ArmorItem {
                             @Override
                             public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float r, float g, float b, float alpha) {
                                 VertexConsumer translucentTexture = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityTranslucent(
+                                    new ResourceLocation(
                                     <#if data.helmetModelTexture?has_content && data.helmetModelTexture != "From armor">
-                                        ${JavaModName}Items.${REGISTRYNAME}_HELMET.get().getArmorTexture(null, null, null, null, false)
+                                        ${JavaModName}Items.${REGISTRYNAME}_HELMET.get().getArmorTexture(null, null, null, null)
                                     <#else>
-                                        new ResourceLocation("${modid}:textures/models/armor/${data.armorTextureFile}_layer_1.png")
-                                    </#if>
+                                        "${modid}:textures/models/armor/${data.armorTextureFile}_layer_1.png"
+                                    </#if>)
                                 ));
                                 super.renderToBuffer(poseStack, translucentTexture, packedLight, packedOverlay, r, g, b, alpha);
                             }
@@ -128,7 +129,7 @@ public abstract class ${name}Item extends ArmorItem {
 		</#if>
 
 		<#if data.helmetModelTexture?has_content && data.helmetModelTexture != "From armor">
-		private final ResourceLocation armorTexture = new ResourceLocation("${modid}:textures/entities/${data.helmetModelTexture}");
+		private static final String armorTexture = "${modid}:textures/entities/${data.helmetModelTexture}";
 
 		@Override public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return armorTexture;
@@ -173,11 +174,12 @@ public abstract class ${name}Item extends ArmorItem {
                             @Override
                             public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float r, float g, float b, float alpha) {
                                 VertexConsumer translucentTexture = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityTranslucent(
+                                    new ResourceLocation(
                                     <#if data.bodyModelTexture?has_content && data.bodyModelTexture != "From armor">
-                                        ${JavaModName}Items.${REGISTRYNAME}_CHESTPLATE.get().getArmorTexture(null, null, null, null, false)
+                                        ${JavaModName}Items.${REGISTRYNAME}_CHESTPLATE.get().getArmorTexture(null, null, null, null)
                                     <#else>
-                                        new ResourceLocation("${modid}:textures/models/armor/${data.armorTextureFile}_layer_1.png")
-                                    </#if>
+                                        "${modid}:textures/models/armor/${data.armorTextureFile}_layer_1.png"
+                                    </#if>)
                                 ));
                                 super.renderToBuffer(poseStack, translucentTexture, packedLight, packedOverlay, r, g, b, alpha);
                             }
@@ -194,7 +196,7 @@ public abstract class ${name}Item extends ArmorItem {
 		</#if>
 
 		<#if data.bodyModelTexture?has_content && data.bodyModelTexture != "From armor">
-		private final ResourceLocation armorTexture = new ResourceLocation("${modid}:textures/entities/${data.bodyModelTexture}");
+		private static final String armorTexture = "${modid}:textures/entities/${data.bodyModelTexture}";
 
 		@Override public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return armorTexture;
@@ -239,11 +241,12 @@ public abstract class ${name}Item extends ArmorItem {
                             @Override
                             public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float r, float g, float b, float alpha) {
                                 VertexConsumer translucentTexture = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityTranslucent(
+                                    new ResourceLocation(
                                     <#if data.leggingsModelTexture?has_content && data.leggingsModelTexture != "From armor">
-                                        ${JavaModName}Items.${REGISTRYNAME}_LEGGINGS.get().getArmorTexture(null, null, null, null, false)
+                                        ${JavaModName}Items.${REGISTRYNAME}_LEGGINGS.get().getArmorTexture(null, null, null, null)
                                     <#else>
-                                        new ResourceLocation("${modid}:textures/models/armor/${data.armorTextureFile}_layer_2.png")
-                                    </#if>
+                                        "${modid}:textures/models/armor/${data.armorTextureFile}_layer_2.png"
+                                    </#if>)
                                 ));
                                 super.renderToBuffer(poseStack, translucentTexture, packedLight, packedOverlay, r, g, b, alpha);
                             }
@@ -260,7 +263,7 @@ public abstract class ${name}Item extends ArmorItem {
 		</#if>
 
 		<#if data.leggingsModelTexture?has_content && data.leggingsModelTexture != "From armor">
-		private final ResourceLocation armorTexture = new ResourceLocation("${modid}:textures/entities/${data.leggingsModelTexture}");
+		private static final String armorTexture = "${modid}:textures/entities/${data.leggingsModelTexture}";
 
 		@Override public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return armorTexture;
@@ -305,11 +308,12 @@ public abstract class ${name}Item extends ArmorItem {
                             @Override
                             public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float r, float g, float b, float alpha) {
                                 VertexConsumer translucentTexture = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityTranslucent(
+                                    new ResourceLocation(
                                     <#if data.bootsModelTexture?has_content && data.bootsModelTexture != "From armor">
-                                        ${JavaModName}Items.${REGISTRYNAME}_BOOTS.get().getArmorTexture(null, null, null, null, false)
+                                        ${JavaModName}Items.${REGISTRYNAME}_BOOTS.get().getArmorTexture(null, null, null, null)
                                     <#else>
-                                        new ResourceLocation("${modid}:textures/models/armor/${data.armorTextureFile}_layer_1.png")
-                                    </#if>
+                                        "${modid}:textures/models/armor/${data.armorTextureFile}_layer_1.png"
+                                    </#if>)
                                 ));
                                 super.renderToBuffer(poseStack, translucentTexture, packedLight, packedOverlay, r, g, b, alpha);
                             }
@@ -326,7 +330,7 @@ public abstract class ${name}Item extends ArmorItem {
 		</#if>
 
 		<#if data.bootsModelTexture?has_content && data.bootsModelTexture != "From armor">
-		private final ResourceLocation armorTexture = new ResourceLocation("${modid}:textures/entities/${data.bootsModelTexture}");
+		private static final String armorTexture = "${modid}:textures/entities/${data.bootsModelTexture}";
 
 		@Override public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return armorTexture;

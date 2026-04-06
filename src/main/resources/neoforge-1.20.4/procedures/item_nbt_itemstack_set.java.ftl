@@ -1,6 +1,6 @@
 <#include "mcitems.ftl">
 {
-	final String _tagName = ${input$tagName};
-	final ItemStack _tagValue = ${mappedMCItemToItemStackCode(input$tagValue, 1)};
-	CustomData.update(DataComponents.CUSTOM_DATA, ${mappedMCItemToItemStackCode(input$item, 1)}, tag -> tag.put(_tagName, _tagValue.saveOptional(world.registryAccess())));
+	String _tagName = ${input$tagName};
+	ItemStack _tagValue = ${mappedMCItemToItemStackCode(input$tagValue, 1)};
+	${mappedMCItemToItemStackCode(input$item, 1)}.getOrCreateTag().put(_tagName, !_tagValue.isEmpty() ? _tagValue.save(new CompoundTag()) : new CompoundTag());
 }

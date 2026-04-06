@@ -1,1 +1,1 @@
-/*@ItemStack*/(ItemStack.parseOptional(${input$entity}.level().registryAccess(), ${input$entity}.getPersistentData().getCompound(${input$tagName})))
+/*@ItemStack*/(ItemStack.of(${input$entity}.getPersistentData().getCompound(${input$tagName})))

@@ -1,5 +1,6 @@
 <#include "mcitems.ftl">
 {
 	Entity _entity${cbi} = ${input$entity};
-	_entity${cbi}.getPersistentData().put(${input$tagName}, ${mappedMCItemToItemStackCode(input$tagValue, 1)}.saveOptional(_entity${cbi}.level().registryAccess()));
+	ItemStack _tagValue = ${mappedMCItemToItemStackCode(input$tagValue, 1)};
+	_entity${cbi}.getPersistentData().put(${input$tagName}, !_tagValue.isEmpty() ? _tagValue.save(new CompoundTag()) : new CompoundTag());
 }

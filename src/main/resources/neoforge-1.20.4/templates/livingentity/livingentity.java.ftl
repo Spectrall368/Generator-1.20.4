@@ -731,10 +731,10 @@ public class ${name}Entity extends ${extendsClass} <#if interfaces?size gt 0>imp
 			<#if data.aiBase == "Wolf">
 			if (this.isTame()) {
 				retval.setOwnerUUID(this.getOwnerUUID());
-				retval.setTame(true, true);
+				retval.setTame(true);
 			}
 			</#if>
-			retval.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(retval.blockPosition()), MobSpawnType.BREEDING, null);
+			retval.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(retval.blockPosition()), MobSpawnType.BREEDING, null, null);
 			return retval;
 		}
 	<#elseif data.breedable>
