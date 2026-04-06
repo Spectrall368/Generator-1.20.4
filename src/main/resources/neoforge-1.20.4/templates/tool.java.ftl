@@ -297,7 +297,7 @@ public class ${name}Item extends FishingRodItem {
         </#if>
     </#list>
 
-    <#assign hasMelee = includeMeleeAttributes && (((data.damageVsEntity - 1) != 0 || (data.damageVsEntity - 1) != "-0") || ((data.attackSpeed - 4) != 0 || (data.attackSpeed - 4) != "-0"))>
+    <#assign hasMelee = includeMeleeAttributes && (((data.damageVsEntity - 1) != 0 || (data.damageVsEntity - 1)?string != "-0") || ((data.attackSpeed - 4) != 0 || (data.attackSpeed - 4)?string != "-0"))>
 
     <#assign slots = []>
     <#assign hasGlobal = false>
@@ -340,11 +340,11 @@ public class ${name}Item extends FishingRodItem {
             builder.putAll(super.getAttributeModifiers(equipmentSlot, stack));
 
             <#if hasMelee>
-                <#if ((data.damageVsEntity - 1) != 0 || (data.damageVsEntity - 1) != "-0")>
+                <#if ((data.damageVsEntity - 1) != 0 && (data.damageVsEntity - 1)?string != "-0")>
                 builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", ${data.damageVsEntity - 1}, AttributeModifier.Operation.ADDITION));
                 </#if>
 
-                <#if ((data.attackSpeed - 4) != 0 || (data.attackSpeed - 4) != "-0")>
+                <#if ((data.attackSpeed - 4) != 0 && (data.attackSpeed - 4)?string != "-0")>
                 builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", ${data.attackSpeed - 4}, AttributeModifier.Operation.ADDITION));
                 </#if>
             </#if>
@@ -381,11 +381,11 @@ public class ${name}Item extends FishingRodItem {
             builder = initializeBuilder(builder, defaultModifiers);
             </#if>
 
-            <#if ((data.damageVsEntity - 1) != 0 || (data.damageVsEntity - 1) != "-0")>
+            <#if ((data.damageVsEntity - 1) != 0 && (data.damageVsEntity - 1)?string != "-0")>
             builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", ${data.damageVsEntity - 1}, AttributeModifier.Operation.ADDITION));
             </#if>
 
-            <#if ((data.attackSpeed - 4) != 0 || (data.attackSpeed - 4) != "-0")>
+            <#if ((data.attackSpeed - 4) != 0 && (data.attackSpeed - 4)?string != "-0")>
             builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", ${data.attackSpeed - 4}, AttributeModifier.Operation.ADDITION));
             </#if>
         }
