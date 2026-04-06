@@ -1,6 +1,6 @@
 _default: ""
-Sword: Sword
-Pickaxe: Pickaxe
+Sword: CUSTOM
+Pickaxe: CUSTOM
 Axe: Axe
 Shovel: Shovel
 Hoe: Hoe

@@ -159,7 +159,7 @@
     {
       "condition": "minecraft:match_tool",
       "predicate": {
-        "items": "minecraft:shears"
+        "items": ["minecraft:shears"]
       }
     }<#if silkTouch>,</#if>
     </#if>
@@ -167,16 +167,14 @@
     {
       "condition": "minecraft:match_tool",
       "predicate": {
-        "predicates": {
-          "minecraft:enchantments": [
-            {
-              "enchantments": "minecraft:silk_touch",
-              "levels": {
-                "min": 1
-              }
+        "enchantments": [
+          {
+            "enchantment": "minecraft:silk_touch",
+            "levels": {
+              "min": 1
             }
-          ]
-        }
+          }
+        ]
       }
     }
     </#if>
