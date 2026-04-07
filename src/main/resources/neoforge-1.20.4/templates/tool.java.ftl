@@ -82,21 +82,14 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
 					return ${mappedMCItemsToIngredient(data.repairItems)};
 				}
 			},
-
 			<#if data.toolType!="MultiTool">
 				<#if data.toolType=="Sword">3<#elseif data.toolType=="Hoe">0<#else>1</#if>,${data.attackSpeed - 4}f,
 			</#if>
-
+		</#if>
 				new Item.Properties()
-				<#if data.immuneToFire>
-				.fireResistant()
-				</#if>
-				<#if data.stayInGridWhenCrafting && data.usageCount != 0>
-				.setNoRepair()
-				</#if>
-		<#elseif data.toolType == "Shears" || data.toolType == "Shield">
-			new Item.Properties()
+				<#if data.toolType == "Shears" || data.toolType == "Shield">
 				.durability(${data.usageCount})
+				</#if>
 				<#if data.rarity != "COMMON">
 				.rarity(Rarity.${data.rarity})
 				</#if>
@@ -106,7 +99,7 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
 				<#if data.stayInGridWhenCrafting && data.usageCount != 0>
 				.setNoRepair()
 				</#if>
-		</#if>);
+		);
 	}
 
 	<#if hasProcedure(data.additionalDropCondition)>
