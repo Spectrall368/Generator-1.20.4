@@ -78,10 +78,10 @@ public class ${JavaModName}BoatItem extends Item {
 		Boat boat = new ${JavaModName}Boat(level, vec3.x, vec3.y, vec3.z);
 		</#if>
 
-        if (level instanceof ServerLevel serverlevel)
-            EntityType.<Boat>createDefaultStackConfig(serverlevel, stack, player).accept(boat);
+		if (level instanceof ServerLevel serverlevel)
+		    EntityType.<Boat>createDefaultStackConfig(serverlevel, stack, player).accept(boat);
 
-        return boat;
+		return boat;
 	}
 }
 <#-- @formatter:on -->
