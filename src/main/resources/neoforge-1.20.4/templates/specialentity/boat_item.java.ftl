@@ -67,14 +67,21 @@ public class ${JavaModName}BoatItem extends Item {
 	<#assign useMethod = useMethod.replace("boat.setVariant(this.type);", variantSetterCode)>
 	@Override ${useMethod}
 
-	private Boat getBoat(Level level, HitResult hitResult) {
+	private Boat getBoat(Level level, HitResult hitResult, ItemStack stack, Player player) {
+		Vec3 vec3 = hitResult.getLocation();
+
 		<#if hasBoat && hasChestBoat>
-		return hasChest ? new ${JavaModName}ChestBoat(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z) : new ${JavaModName}Boat(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
+		Boat boat = hasChest ? new ${JavaModName}ChestBoat(level, vec3.x, vec3.y, vec3.z) : new ${JavaModName}Boat(level, vec3.x, vec3.y, vec3.z);
 		<#elseif hasChestBoat>
-		return new ${JavaModName}ChestBoat(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
+		Boat boat = new ${JavaModName}ChestBoat(level, vec3.x, vec3.y, vec3.z);
 		<#else>
-		return new ${JavaModName}Boat(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
+		Boat boat = new ${JavaModName}Boat(level, vec3.x, vec3.y, vec3.z);
 		</#if>
+
+        if (level instanceof ServerLevel serverlevel)
+            EntityType.<Boat>createDefaultStackConfig(serverlevel, stack, player).accept(boat);
+
+        return boat;
 	}
 }
 <#-- @formatter:on -->
