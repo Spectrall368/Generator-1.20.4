@@ -93,7 +93,7 @@ package ${package}.init;
 		</#list>
 	}
 
-	@Mod.EventBusSubscriber({Dist.CLIENT}) public static class KeyEventListener {
+	@Mod.EventBusSubscriber(Dist.CLIENT) public static class KeyEventListener {
 
 		@SubscribeEvent public static void onClientTick(TickEvent.ClientTickEvent event) {
 			if (Minecraft.getInstance().screen == null) {

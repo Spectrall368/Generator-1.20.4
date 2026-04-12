@@ -142,11 +142,13 @@ package ${package}.init;
 	</#if>
 
 	<#if signs?size != 0>
-	@SubscribeEvent public static void registerSigns(SpawnPlacementRegisterEvent event) {
-		<#list signs as block>
-			modify(BlockEntityType.<#if block.blockBase == "HangingSign">HANGING_</#if>SIGN,
-					${block.getModElement().getRegistryNameUpper()}.get(), ${block.getWallRegistryNameUpper()}.get());
-		</#list>
+	@SubscribeEvent public static void registerSigns(FMLCommonSetupEvent event) {
+		event.enqueueWork(() -> {
+            <#list signs as block>
+                modify(BlockEntityType.<#if block.blockBase == "HangingSign">HANGING_</#if>SIGN,
+                        ${block.getModElement().getRegistryNameUpper()}.get(), ${block.getWallRegistryNameUpper()}.get());
+            </#list>
+		});
 	}
 
     private static void modify(BlockEntityType<?> blockEntityType, Block... blocksToAdd) {

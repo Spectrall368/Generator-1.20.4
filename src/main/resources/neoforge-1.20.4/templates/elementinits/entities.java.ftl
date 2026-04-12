@@ -38,6 +38,7 @@ package ${package}.init;
 
 <#assign hasLivingEntities = w.hasElementsOfType("livingentity")>
 <#assign entitiesWithInventory = w.getGElementsOfType("livingentity")?filter(e -> e.guiBoundTo?has_content)>
+<#assign specialentities = w.getGElementsOfType("specialentity")>
 
 <#if hasLivingEntities || entitiesWithInventory?size != 0>
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -68,6 +69,19 @@ public class ${JavaModName}Entities {
 			</#if>
 		</#if>
 	</#list>
+
+	<#if specialentities?size != 0>
+		<#if specialentities?filter(e -> e.entityType == "Boat")?size != 0>
+			public static final DeferredHolder<EntityType<?>, EntityType<${JavaModName}Boat>> ${JavaModName?upper_case}_BOAT =
+				register("boat", EntityType.Builder.<${JavaModName}Boat>
+					of(${JavaModName}Boat::new, MobCategory.MISC).sized(1.375f, 0.5625f).clientTrackingRange(10));
+		</#if>
+		<#if specialentities?filter(e -> e.entityType == "ChestBoat")?size != 0>
+			public static final DeferredHolder<EntityType<?>, EntityType<${JavaModName}ChestBoat>> ${JavaModName?upper_case}_CHEST_BOAT =
+				register("chest_boat", EntityType.Builder.<${JavaModName}ChestBoat>
+					of(${JavaModName}ChestBoat::new, MobCategory.MISC).sized(1.375f, 0.5625f).clientTrackingRange(10));
+		</#if>
+	</#if>
 
 	// Start of user code block custom entities
  	// End of user code block custom entities
